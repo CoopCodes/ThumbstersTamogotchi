@@ -1,4 +1,4 @@
-export class Monster {
+export class MonsterClass {
     name: string;
     id: number;
 
@@ -20,5 +20,11 @@ export class Monster {
             return { name: "default", path: this.id + "/default.svg" }
         }
         return { name: "default", path: this.id + "/default.svg" }
+    }
+
+    losehunger() {
+        setInterval(() => {
+            this.hunger -= 1;
+          }, 1000);
     }
 }
