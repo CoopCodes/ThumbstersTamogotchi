@@ -1,0 +1,25 @@
+:root {
+  --background-color: #8053FF;
+}
+
+.App {
+  background-color: var(--background-color);
+  height: 100vh;
+  width: 100vw;
+}
+/* Attributes */
+
+
+
+/* Monsters */
+
+.monsters {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.monster {
+  width: 45%;
+}
