@@ -28,3 +28,5 @@ export class MonsterClass {
           }, 1000);
     }
 }
+
+export type onClickEvent = () => void;
