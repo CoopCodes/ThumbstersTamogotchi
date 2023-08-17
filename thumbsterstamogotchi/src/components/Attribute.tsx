@@ -17,8 +17,8 @@ const Attribute = ({ attrName, imagePath, color, progress }: Props) => {
     transform: scale(0.8);
     display: flex;
     width: 420px;
-    padding: 50px 0;
-    border-radius: 8px;
+    padding: 50px 0;    
+    border-radius: 8px; 
     row-gap: 30px;
     flex-direction: column;
     align-items: center;

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import './App.css';
 import { styled, ThemeProvider } from 'styled-components';
-import { MonsterClass } from './global'
+import { MonsterClass, updateMood } from './global'
 
 import Attribute from './components/Attribute';
 import Interaction from './components/Interaction';
@@ -38,7 +38,7 @@ const Attributes = styled.div`
 const Interactions = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-evenly;
 `
 
 
@@ -47,20 +47,49 @@ function App() {
     new MonsterClass("blue", 1) // List of all monsters that user has
   ];
 
- 
   const [monstersState, setMonstersState] = useState(monsters);
-
+  const [hungerEnabledState, setHungerEnabledState] = useState(false);
+  const [happinessEnabledState, setHappinessEnabledState] = useState(false);
+  const [cleanEnabledState, setCleanEnabledState] = useState(false);
   const focusMonster = monstersState.find(m => m.id === 1)
+
+  let attributeTicks: { [key: string]: number } = {
+    hunger: 5000,
+    happiness: 500,
+    clean: 1000,
+  }
+
+  function Pat() {
+
+  }
 
   useEffect(() => {
    if (focusMonster) {
-
-     setInterval(() => {
-       focusMonster.hunger -= 1
-       // If hunger is full, then disable the button.
-
-       setMonstersState([ focusMonster,...monstersState.filter(m => m.id !== 1)])
-     }, 5000);
+      // Hunger tick
+      setInterval(() => { 
+          if (focusMonster.hunger > 0) {
+            focusMonster.hunger -= 1;
+            focusMonster.mood = updateMood(focusMonster);
+            setMonstersState([focusMonster,...monstersState.filter(m => m.id !== 1)]);
+            setHungerEnabledState(true)
+            
+          } else { // Start health decreasing
+            focusMonster.health -= 1;
+            setMonstersState([focusMonster,...monstersState.filter(m => m.id !== 1)]);
+            attributeTicks.happiness = 3000;
+          }
+        }, attributeTicks.hunger);
+        
+        // Happiness Tick
+        setInterval(() => {
+          if (focusMonster.happiness > 0) {
+            focusMonster.happiness -= 1;
+            focusMonster.mood = updateMood(focusMonster)
+            setMonstersState([focusMonster,...monstersState.filter(m => m.id !== 1)])
+            setHappinessEnabledState(true)
+            console.log(focusMonster.mood)
+        }
+      }, attributeTicks.happiness);
    }
 
   }, [])
@@ -82,7 +111,7 @@ function App() {
           {
             monsters.map((monster) => {
               return (
-                <Monster src={'./resources/Monsters/' + monster.updateMood().path} alt='monster'/>
+                <Monster src={'./resources/Monsters/' + focusMonster.mood.path} alt='monster'/>
               )
             })
           }
@@ -90,7 +119,9 @@ function App() {
         
         {/* Interactions */}
         <Interactions>
-          <Interaction attribute='hunger' imagePath='./resources/images/hunger.svg' monster={{focusMonster: focusMonster, monstersState: monstersState, setMonstersState: setMonstersState}}/>
+          <Interaction enabledState={hungerEnabledState} setEnabledState={setHungerEnabledState} attribute='hunger' imagePath='./resources/images/hunger.svg' monster={{focusMonster: focusMonster, monstersState: monstersState, setMonstersState: setMonstersState}}/>
+          <Interaction enabledState={happinessEnabledState} setEnabledState={setHappinessEnabledState} attribute='happiness' imagePath='./resources/images/pat.svg' monster={{focusMonster: focusMonster, monstersState: monstersState, setMonstersState: setMonstersState}} OnClickEvent={Pat}/>
+          <Interaction enabledState={cleanEnabledState} setEnabledState={setCleanEnabledState} imagePath='./resources/images/clean.svg' monster={{focusMonster: focusMonster, monstersState: monstersState, setMonstersState: setMonstersState}}/>
         </Interactions>
 
       </div>
