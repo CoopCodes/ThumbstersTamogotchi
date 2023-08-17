@@ -26,6 +26,9 @@ export function updateMood(monster: MonsterClass) {
     } else if (monster.happiness <= 20 && monster.happiness >= 0 ) {
         return { name: "angry", path: monster.id + "/devistated.svg"};
     }
+    // } else if (monster.happiness <= 5 && monster.happiness >= 0) {
+        // return { name: "dead", path: monster.id + "/dead.svg"};
+    // }
     return { name: "default", path: monster.id + "/default.svg" }
 }
 export type onClickEvent = () => void;

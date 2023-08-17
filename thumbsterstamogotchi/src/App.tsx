@@ -19,11 +19,12 @@ const theme = {
 // Styled Components:
 
 const Monsters = styled.section`
+  margin-top: -80px;
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  height: 50%;
+  height: 50vh;
 `;
 
 const Monster = styled.img`
@@ -51,11 +52,12 @@ function App() {
   const [hungerEnabledState, setHungerEnabledState] = useState(false);
   const [happinessEnabledState, setHappinessEnabledState] = useState(false);
   const [cleanEnabledState, setCleanEnabledState] = useState(false);
+  const [happinessState, setHappinessState] = useState("./resources/images/happiness.svg")
   const focusMonster = monstersState.find(m => m.id === 1)
 
   let attributeTicks: { [key: string]: number } = {
     hunger: 5000,
-    happiness: 500,
+    happiness: 100,
     clean: 1000,
   }
 
@@ -88,6 +90,16 @@ function App() {
             setMonstersState([focusMonster,...monstersState.filter(m => m.id !== 1)])
             setHappinessEnabledState(true)
             console.log(focusMonster.mood)
+
+            // Changes the mood of the smiley face
+            if (focusMonster.happiness <= 100 && focusMonster.happiness > 60) {
+              setHappinessState("./resources/images/happiness.svg")
+            } else if (focusMonster.happiness <= 60 && focusMonster.happiness >= 20 ) {
+              setHappinessState("./resources/images/happiness-neutral.svg")
+            } else if (focusMonster.happiness <= 20 && focusMonster.happiness >= 0 ) {
+              setHappinessState("./resources/images/happiness-sad.svg")
+            }
+            
         }
       }, attributeTicks.happiness);
    }
@@ -103,7 +115,7 @@ function App() {
         <Attributes className="attributes">
           <Attribute attrName="health" imagePath='./resources/images/heart.png' color='#FF4848' progress={focusMonster.health}/>
           <Attribute attrName="hunger" imagePath='./resources/images/hunger.svg' color='#F3AD61' progress={focusMonster.hunger}/>
-          <Attribute attrName="happiness" imagePath='./resources/images/happiness.svg' color='#02D9A0' progress={focusMonster.happiness}/>
+          <Attribute attrName="happiness" imagePath={happinessState} color='#02D9A0' progress={focusMonster.happiness}/>
         </Attributes>
 
         {/* Monsters */}
@@ -119,9 +131,9 @@ function App() {
         
         {/* Interactions */}
         <Interactions>
-          <Interaction enabledState={hungerEnabledState} setEnabledState={setHungerEnabledState} attribute='hunger' imagePath='./resources/images/hunger.svg' monster={{focusMonster: focusMonster, monstersState: monstersState, setMonstersState: setMonstersState}}/>
-          <Interaction enabledState={happinessEnabledState} setEnabledState={setHappinessEnabledState} attribute='happiness' imagePath='./resources/images/pat.svg' monster={{focusMonster: focusMonster, monstersState: monstersState, setMonstersState: setMonstersState}} OnClickEvent={Pat}/>
-          <Interaction enabledState={cleanEnabledState} setEnabledState={setCleanEnabledState} imagePath='./resources/images/clean.svg' monster={{focusMonster: focusMonster, monstersState: monstersState, setMonstersState: setMonstersState}}/>
+          <Interaction name="Feed" enabledState={hungerEnabledState} setEnabledState={setHungerEnabledState} attribute='hunger' imagePath='./resources/images/hunger.svg' monster={{focusMonster: focusMonster, monstersState: monstersState, setMonstersState: setMonstersState}}/>
+          <Interaction name="Pat" enabledState={happinessEnabledState} setEnabledState={setHappinessEnabledState} attribute='happiness' imagePath='./resources/images/pat.svg' monster={{focusMonster: focusMonster, monstersState: monstersState, setMonstersState: setMonstersState}} OnClickEvent={Pat}/>
+          <Interaction name="Clean" enabledState={cleanEnabledState} setEnabledState={setCleanEnabledState} imagePath='./resources/images/clean.svg' monster={{focusMonster: focusMonster, monstersState: monstersState, setMonstersState: setMonstersState}}/>
         </Interactions>
 
       </div>

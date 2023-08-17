@@ -12,6 +12,7 @@ interface MonsterObj {
 
 interface Props { 
     attribute?: "hunger" | "health" | 'happiness'; 
+    name: string;
     imagePath: string;
     monster: MonsterObj;
     enabledState: boolean;
@@ -21,7 +22,7 @@ interface Props {
 
 // Styled Components:
 
-const Container = styled.div<{enabled: boolean}>`
+const Button = styled.div<{enabled: boolean}>`
     position: relative;
     height: 12em;
     width: 12em;
@@ -55,9 +56,26 @@ const Icon = styled.img`
     width: 60%;
     height: 60%;
     z-index: 1;
-    `
+`
 
-const Interaction = ({ attribute, imagePath, monster, OnClickEvent, enabledState, setEnabledState }: Props) => {
+const InteractionName = styled.h1`
+    position: relative;
+    color: white;
+    color: #FFF;
+    text-align: center;
+    font-family: Poppins;
+    font-size: 3rem;
+    font-style: normal;
+    font-weight: 800;
+`
+
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`
+
+const Interaction = ({ attribute, name, imagePath, monster, OnClickEvent, enabledState, setEnabledState }: Props) => {
     // const [enabledState, setEnabledState] = useState(true);
     const [pressed, setPressedState] = useState(false);
 
@@ -84,12 +102,15 @@ const Interaction = ({ attribute, imagePath, monster, OnClickEvent, enabledState
     }
 
     return (
-        <Container onClick={() => Click()} onMouseDown={() => setPressedState(true)}
-        onMouseUp={() => setPressedState(false)} enabled={enabledState}>
-            <MainBox pressed={pressed} enabled={enabledState}>
-                <Icon src={imagePath}/>
-            </MainBox>
-            <ShadowBox/>
+        <Container>
+            <Button onClick={() => Click()} onMouseDown={() => setPressedState(true)}
+            onMouseUp={() => setPressedState(false)} enabled={enabledState}>
+                <MainBox pressed={pressed} enabled={enabledState}>
+                    <Icon src={imagePath}/>
+                </MainBox>
+                <ShadowBox/>
+            </Button>
+            <InteractionName>{name}</InteractionName>
         </Container>
     );
 };
