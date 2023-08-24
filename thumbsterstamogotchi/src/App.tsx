@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useState, useRef } from 'react';
 import './App.css';
 import { styled, ThemeProvider } from 'styled-components';
-import { MonsterClass, updateMood } from './global'
+import { MonsterClass, updateMood, devices } from './global'
 
 import Attribute from './components/Attribute';
 import Interaction from './components/Interaction';
@@ -12,11 +12,23 @@ const theme = {
     backgroundColor: '#8053FF',
     interactionPrimary: '#9F53FF',
     interactionShadow: '#713BB2',
+    health: '#FF4848',
+    hunger: '#F3AD61',
+    happiness: '#02D9A0',
   }
 }
 
 
 // Styled Components:
+
+const Media = `
+  @media only screen and (${devices.s}) {
+    scale: 0.9;
+  }
+  @media only screen and (${devices.xs}) {
+    scale: 0.6;
+  }
+`
 
 const Monsters = styled.section`
   margin-top: -80px;
@@ -28,18 +40,29 @@ const Monsters = styled.section`
 `;
 
 const Monster = styled.img`
-  width: 45%;
+  width: 300px;
+  height: 50vh;
 `;
 
 const Attributes = styled.div`
+  margin-left: auto;
+  margin-right: auto;
+  gap: 0%;
+  width: 90%;
   display: flex;
   flex-direction: row;
   justify-content: center;
+  ${Media}
 `
 const Interactions = styled.div`
+  margin-left: auto;
+  margin-right: auto;
+  gap: 15%;
+  width: 90%;
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: center;
+  ${Media}
 `
 
 
@@ -56,8 +79,8 @@ function App() {
   const focusMonster = monstersState.find(m => m.id === 1)
 
   let attributeTicks: { [key: string]: number } = {
-    hunger: 5000,
-    happiness: 100,
+    hunger: 100,
+    happiness: 10000,
     clean: 1000,
   }
 
@@ -113,9 +136,9 @@ function App() {
       <div className="App">
         {/* Attributes */}
         <Attributes className="attributes">
-          <Attribute attrName="health" imagePath='./resources/images/heart.png' color='#FF4848' progress={focusMonster.health}/>
-          <Attribute attrName="hunger" imagePath='./resources/images/hunger.svg' color='#F3AD61' progress={focusMonster.hunger}/>
-          <Attribute attrName="happiness" imagePath={happinessState} color='#02D9A0' progress={focusMonster.happiness}/>
+          <Attribute attrName="health" imagePath='./resources/images/heart.png'  progress={focusMonster.health}/>
+          <Attribute attrName="hunger" imagePath='./resources/images/hunger.svg'  progress={focusMonster.hunger}/>
+          <Attribute attrName="happiness" imagePath={happinessState} progress={focusMonster.happiness}/>
         </Attributes>
 
         {/* Monsters */}

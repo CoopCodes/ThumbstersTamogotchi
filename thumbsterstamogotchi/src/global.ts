@@ -1,3 +1,5 @@
+
+
 export class MonsterClass {
     name: string;
     id: number;
@@ -12,6 +14,18 @@ export class MonsterClass {
         this.name = name;
         this.id = id;
         this.mood = { name: "default", path: this.id + "/default.svg" };
+    }
+}
+
+export class FoodClass {
+    name: string;
+    perk: number;
+    iconPath: string;
+
+    constructor(name: string, perk: number) {
+        this.name = name;
+        this.perk = perk;
+        this.iconPath = "./resources/images/Food/" + name.toLowerCase() + '.svg';
     }
 }
 
@@ -31,4 +45,25 @@ export function updateMood(monster: MonsterClass) {
     // }
     return { name: "default", path: monster.id + "/default.svg" }
 }
+
 export type onClickEvent = () => void;
+
+export type onFoodClickEvent = (perk: number) => void;
+
+export const breakpoints = {
+    's': 700,
+    'xs': 580,
+}
+
+export const devices = {
+    's': `max-width: ${breakpoints.s}px`,
+    'xs': `max-width: ${breakpoints.xs}px`,
+}
+
+export const Foods: FoodClass[] = [
+    new FoodClass("Bread", 20),
+    new FoodClass("Apple", 10),
+    new FoodClass("Cheese", 10),
+    new FoodClass("Banana", 15),
+    new FoodClass("Egg", 30)
+]
