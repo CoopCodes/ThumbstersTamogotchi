@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { Ref } from 'react';
 import Food from './Food';
 import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { onClickEvent, onFoodClickEvent } from '../global';
 import { MonsterClass, Foods } from '../global';
+import { useClickOutside } from '../customEffects/useClickoutside';
 
 interface MonsterObj {
     focusMonster: MonsterClass,
@@ -23,25 +24,6 @@ interface Props {
 }
 
 // Styled Components:
-
-// const Button = styled.div<{enabled: boolean}>`
-//     position: relative;
-//     height: 9em;
-//     width: 9em;
-//     filter: ${(props) => props.enabled? 'saturate(100%)' : 'saturate(0%)'};
-// `
-
-const growButton = (attribute: string | undefined, pressed: boolean) => {
-    if (attribute !== "hunger" && attribute !== undefined) {
-        if (pressed === true) {
-            return  `
-                height: 9em;
-            `
-        }
-    } else {
-        return `9em;`
-    }
-}
 
 const FoodDrawer = styled.div<{enabled: boolean, clicked: boolean}>`
     position: absolute;
@@ -131,7 +113,17 @@ const Interaction = ({ attribute, name, imagePath, monster, OnClickEvent, enable
     // const [enabledState, setEnabledState] = useState(true);
     const [pressed, setPressedState] = useState(false);
     const [clicked, setClickedState] = useState(false);
+    const clickRef: React.RefObject<any> = React.useRef();
+
+    function onClickOutsideDrawer() {
+        setClickedState(true);
+        if (clicked === true) {
+            setClickedState(false);
+            console.log('hello')
+        }
+    }
     
+    useClickOutside(clickRef, onClickOutsideDrawer);
     
     // Passing in an object with all the monster information, so when clicked, it can update the focus monster, and then update the main UseState Monsters, using setMonsterState, similar to when decreasing the monsters hunger every x seconds.
     function Click(perk: number) {
@@ -153,6 +145,7 @@ const Interaction = ({ attribute, name, imagePath, monster, OnClickEvent, enable
     }
 
     function HungerClick() {
+        console.log(clicked)
         // slide food into view
         setClickedState((clicked === false)? true : false); // Toggle clicked
     }
@@ -174,7 +167,7 @@ const Interaction = ({ attribute, name, imagePath, monster, OnClickEvent, enable
                         <ShadowBox/>
                         <InteractionName>{name}</InteractionName>
                 </Button>
-                <FoodDrawContainer clicked={clicked}>
+                <FoodDrawContainer clicked={clicked} ref={clickRef}>
                     <FoodDrawer enabled={enabledState} clicked={clicked}>
                         { Foods.map((food) => {
                             return (<Food monster={monster} OnClickEvent={Click} enabledState={enabledState} setEnabledState={setEnabledState} foodItem={food}/>)

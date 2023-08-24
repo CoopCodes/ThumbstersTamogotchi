@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { styled } from 'styled-components';
+import { styled, keyframes, css } from 'styled-components';
 import { MonsterClass, onFoodClickEvent, FoodClass } from '../global';
 
 interface MonsterObj {
@@ -48,9 +48,25 @@ const FoodPerk = styled.div<{perk: number}>`
     border-radius: 0 20px 20px 0;
 `
 
-const FoodPerkText = styled.h1`
-    
+const onClickAnimation = keyframes<{setClickedState: React.Dispatch<React.SetStateAction<boolean>>}>`
+    0% { transform: translate(20px, -20px); opacity: 0; z-index: 1; }
+    50% { transform: translate(60px, -50px); opacity: 1; z-index: 1; }
+    100% {
+        transform: translate(20px, -20px); opacity: 0; z-index: -1;
+    }
 `
+
+const FoodPerkText = styled.h1<{clicked: boolean}>`
+    position: absolute;
+    z-index: 2;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    opacity: 0;
+    z-index: -1;
+    transition: all 0.5s ease-in-out;
+    ${(props) => (props.clicked)? css`animation: ${onClickAnimation} .7s ease-in-out;` : ''}
+`
+
 
 const Container = styled.div`
     display: flex;
@@ -61,31 +77,33 @@ const Container = styled.div`
 `
 
 const Food = ({ monster, OnClickEvent, enabledState, setEnabledState, foodItem }: Props) => {
-    const [pressed, setPressedState] = useState(false);
+    const [clicked, setClickedState] = useState(false);
     const attribute = 'hunger';
 
 
     // Passing in an object with all the monster information, so when clicked, it can update the focus monster, and then update the main UseState Monsters, using setMonsterState, similar to when decreasing the monsters hunger every x seconds.
     function Click() {
         if (enabledState) {
+            setClickedState(true);
             if (OnClickEvent) {
                 OnClickEvent(foodItem.perk); 
                 if (attribute === undefined)
                 return
             }
         }
-            
     }
 
     return (
         <Container>
-            <Button onClick={() => Click()} onMouseDown={() => setPressedState(true)}
-            onMouseUp={() => setPressedState(false)} enabled={enabledState}>
+            <Button onClick={() => Click()} enabled={enabledState}>
                 <Container>
                     <Icon src={foodItem.iconPath}/>
                     <FoodPerkContainer>
                         <FoodPerk perk={foodItem.perk}/>
                     </FoodPerkContainer>
+                    <FoodPerkText clicked={clicked} onAnimationEnd={() => {
+                        setClickedState(false)
+                    }}>+{foodItem.perk}</FoodPerkText>
                 </Container>
             </Button>
         </Container>
