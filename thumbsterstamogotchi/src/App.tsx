@@ -79,8 +79,8 @@ function App() {
   const focusMonster = monstersState.find(m => m.id === 1)
 
   let attributeTicks: { [key: string]: number } = {
-    hunger: 100,
-    happiness: 10000,
+    hunger: 1000,
+    happiness: 100,
     clean: 1000,
   }
 

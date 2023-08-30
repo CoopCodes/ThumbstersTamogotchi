@@ -25,7 +25,7 @@ interface Props {
 
 // Styled Components:
 
-const FoodDrawer = styled.div<{enabled: boolean, clicked: boolean}>`
+const FoodDrawer = styled.div<{$enabled: boolean, $clicked: boolean}>`
     position: absolute;
     display: flex;
     flex-direction: column-reverse;
@@ -38,15 +38,15 @@ const FoodDrawer = styled.div<{enabled: boolean, clicked: boolean}>`
     border-radius: 100px;
     padding-bottom: 50px;
     transition: transform .5s ease-in-out;
-    transform: translateY(${(props) => (props.clicked === true)? '0' : '1000px' });
-    filter: ${(props) => props.enabled? 'saturate(100%)' : 'saturate(0%)'};
+    transform: translateY(${(props) => (props.$clicked === true)? '0' : '1000px' });
+    filter: ${(props) => props.$enabled? 'saturate(100%)' : 'saturate(0%)'};
 `
 
-const Button = styled.div<{enabled: boolean, attribute: string | undefined}>`
+const Button = styled.div<{$enabled: boolean, attribute: string | undefined}>`
     position: relative;
     height: 9em;
     width: 9em;
-    filter: ${(props) => props.enabled? 'saturate(100%)' : 'saturate(0%)'};
+    filter: ${(props) => props.$enabled? 'saturate(100%)' : 'saturate(0%)'};
 `
 
 const ShadowBox = styled.div`
@@ -59,7 +59,7 @@ const ShadowBox = styled.div`
     z-index: 0;
     `
 
-const MainBox = styled.div<{pressed: boolean, enabled: boolean, clicked: boolean}>`
+const MainBox = styled.div<{$pressed: boolean, $enabled: boolean, $clicked: boolean}>`
     position: relative;
     height: 100%;
     width: 100%;
@@ -69,9 +69,9 @@ const MainBox = styled.div<{pressed: boolean, enabled: boolean, clicked: boolean
     background-color: ${(props) => props.theme.default.interactionPrimary};
     border-radius: 100px;
     transition: opacity 0.25s ease-in-out 0.25s;
-    transform: ${(props) => (props.pressed && props.enabled)? 'translateY(10px)' : 'translateY(0px)'};
+    transform: ${(props) => (props.$pressed && props.$enabled)? 'translateY(10px)' : 'translateY(0px)'};
     z-index: 1;
-    opacity: ${(props) => (props.clicked === true)? 0 : 1};
+    opacity: ${(props) => (props.$clicked === true)? 0 : 1};
     `
 
 const Icon = styled.img`
@@ -99,14 +99,14 @@ const Container = styled.div`
     align-items: center;
     `
 
-const FoodDrawContainer = styled.div<{clicked: boolean}>`
+const FoodDrawContainer = styled.div<{$clicked: boolean}>`
     width: 100%;
     position: absolute;
     height: 100vh;
     bottom: 0;
     overflow: hidden;
     border-radius: 100px;
-    z-index: ${(props) => (props.clicked === true)? 1 : -1};
+    z-index: ${(props) => (props.$clicked === true)? 1 : -1};
     `
 
 const Interaction = ({ attribute, name, imagePath, monster, OnClickEvent, enabledState, setEnabledState }: Props) => {
@@ -115,8 +115,8 @@ const Interaction = ({ attribute, name, imagePath, monster, OnClickEvent, enable
     const [clicked, setClickedState] = useState(false);
     const clickRef: React.RefObject<any> = React.useRef();
 
-    function onClickOutsideDrawer() {
-        setClickedState(true);
+    function onClickOutsideDrawer() { // Not changing to false for some reason
+        setClickedState(true); 
         if (clicked === true) {
             setClickedState(false);
             console.log('hello')
@@ -145,9 +145,15 @@ const Interaction = ({ attribute, name, imagePath, monster, OnClickEvent, enable
     }
 
     function HungerClick() {
-        console.log(clicked)
+        console.log("🚀 ~ file: Interaction.tsx:149 ~ HungerClick ~ clicked:", clicked)
         // slide food into view
-        setClickedState((clicked === false)? true : false); // Toggle clicked
+        if (clicked === true) {
+            setClickedState(false);
+            console.log("🚀 ~ file: Interaction.tsx:152 ~ HungerClick ~ clicked:", clicked)
+        } else { 
+            console.log("🚀 ~ file: Interaction.tsx:152 ~ HungerClick ~ clicked:", clicked)
+            setClickedState(true) 
+        }
     }
 
     return (
@@ -159,16 +165,16 @@ const Interaction = ({ attribute, name, imagePath, monster, OnClickEvent, enable
                 <Button onClick={() => HungerClick()} 
                 onMouseDown={() => setPressedState(true)} 
                 onMouseUp={() => setPressedState(false)} 
-                enabled={enabledState} 
+                $enabled={enabledState} 
                 attribute={(attribute !== undefined)? attribute : undefined}>
-                        <MainBox pressed={pressed} enabled={enabledState} clicked={clicked}>
+                        <MainBox $pressed={pressed} $enabled={enabledState} $clicked={clicked}>
                             <Icon src={imagePath}/>
                         </MainBox>
                         <ShadowBox/>
                         <InteractionName>{name}</InteractionName>
                 </Button>
-                <FoodDrawContainer clicked={clicked} ref={clickRef}>
-                    <FoodDrawer enabled={enabledState} clicked={clicked}>
+                <FoodDrawContainer $clicked={clicked} ref={clickRef}>
+                    <FoodDrawer $enabled={enabledState} $clicked={clicked}>
                         { Foods.map((food) => {
                             return (<Food monster={monster} OnClickEvent={Click} enabledState={enabledState} setEnabledState={setEnabledState} foodItem={food}/>)
                         }) }
@@ -177,8 +183,8 @@ const Interaction = ({ attribute, name, imagePath, monster, OnClickEvent, enable
             </div> :
                 // if is not hunger attribute
                 <Button onClick={() => Click(1)} onMouseDown={() => setPressedState(true)}
-                onMouseUp={() => setPressedState(false)} enabled={enabledState} attribute={(attribute !== undefined)? attribute : undefined} >
-                    <MainBox pressed={pressed} enabled={enabledState} clicked={clicked}>
+                onMouseUp={() => setPressedState(false)} $enabled={enabledState} attribute={(attribute !== undefined)? attribute : undefined} >
+                    <MainBox $pressed={pressed} $enabled={enabledState} $clicked={clicked}>
                         <Icon src={imagePath}/>
                     </MainBox>
                     <ShadowBox/>
