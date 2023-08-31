@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useState, useRef } from 'react';
 import './App.css';
-import { styled, ThemeProvider } from 'styled-components';
+import { styled, ThemeProvider, css } from 'styled-components';
 import { MonsterClass, updateMood, devices } from './global'
 
 import Attribute from './components/Attribute';
@@ -21,7 +21,7 @@ const theme = {
 
 // Styled Components:
 
-const Media = `
+const Media = css`
   @media only screen and (${devices.s}) {
     scale: 0.9;
   }
@@ -112,8 +112,6 @@ function App() {
             focusMonster.mood = updateMood(focusMonster)
             setMonstersState([focusMonster,...monstersState.filter(m => m.id !== 1)])
             setHappinessEnabledState(true)
-            console.log(focusMonster.mood)
-
             // Changes the mood of the smiley face
             if (focusMonster.happiness <= 100 && focusMonster.happiness > 60) {
               setHappinessState("./resources/images/happiness.svg")

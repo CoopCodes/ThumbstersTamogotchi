@@ -1,6 +1,6 @@
 import React, { Ref } from 'react';
 import Food from './Food';
-import { useState, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { onClickEvent, onFoodClickEvent } from '../global';
 import { MonsterClass, Foods } from '../global';
@@ -38,7 +38,7 @@ const FoodDrawer = styled.div<{$enabled: boolean, $clicked: boolean}>`
     border-radius: 100px;
     padding-bottom: 50px;
     transition: transform .5s ease-in-out;
-    transform: translateY(${(props) => (props.$clicked === true)? '0' : '1000px' });
+    transform: translateY(${(props) => (props.$clicked === true)? '0px' : '1000px' });
     filter: ${(props) => props.$enabled? 'saturate(100%)' : 'saturate(0%)'};
 `
 
@@ -115,13 +115,24 @@ const Interaction = ({ attribute, name, imagePath, monster, OnClickEvent, enable
     const [clicked, setClickedState] = useState(false);
     const clickRef: React.RefObject<any> = React.useRef();
 
+    const clickedState = useMemo(() => {
+        console.log(clicked);
+        return clicked;
+    }, [clicked]);
+    // useEffect(() => {
+    //     setInterval(() => {
+    //         console.log("clicked state: ", clicked)
+    //     }, 500)
+    // }, [clicked]);
+
     function onClickOutsideDrawer() { // Not changing to false for some reason
-        setClickedState(true); 
-        if (clicked === true) {
-            setClickedState(false);
-            console.log('hello')
-        }
+        setClickedState(false);
+        // console.log('onClickOutsideDrawer()')
+        // if (clicked === true) {
+        //     console.log('clicked === true')
+        // }
     }
+
     
     useClickOutside(clickRef, onClickOutsideDrawer);
     
@@ -145,15 +156,8 @@ const Interaction = ({ attribute, name, imagePath, monster, OnClickEvent, enable
     }
 
     function HungerClick() {
-        console.log("🚀 ~ file: Interaction.tsx:149 ~ HungerClick ~ clicked:", clicked)
         // slide food into view
-        if (clicked === true) {
-            setClickedState(false);
-            console.log("🚀 ~ file: Interaction.tsx:152 ~ HungerClick ~ clicked:", clicked)
-        } else { 
-            console.log("🚀 ~ file: Interaction.tsx:152 ~ HungerClick ~ clicked:", clicked)
-            setClickedState(true) 
-        }
+        setClickedState(!clicked) 
     }
 
     return (
@@ -161,7 +165,7 @@ const Interaction = ({ attribute, name, imagePath, monster, OnClickEvent, enable
         {
             (attribute === "hunger")?
             // if is hunger 
-            <div>
+            <div  ref={clickRef}>
                 <Button onClick={() => HungerClick()} 
                 onMouseDown={() => setPressedState(true)} 
                 onMouseUp={() => setPressedState(false)} 
@@ -173,7 +177,7 @@ const Interaction = ({ attribute, name, imagePath, monster, OnClickEvent, enable
                         <ShadowBox/>
                         <InteractionName>{name}</InteractionName>
                 </Button>
-                <FoodDrawContainer $clicked={clicked} ref={clickRef}>
+                <FoodDrawContainer $clicked={clicked}>
                     <FoodDrawer $enabled={enabledState} $clicked={clicked}>
                         { Foods.map((food) => {
                             return (<Food monster={monster} OnClickEvent={Click} enabledState={enabledState} setEnabledState={setEnabledState} foodItem={food}/>)
